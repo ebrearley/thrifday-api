@@ -1,8 +1,9 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { UserEntity } from '@users/entities/user.entity';
 import { IsEmail } from 'class-validator';
 
-@ObjectType()
-export class User {
+@ObjectType('User')
+export class UserModel {
   @Field(() => ID)
   id: string;
 
@@ -15,4 +16,13 @@ export class User {
   @Field()
   @IsEmail()
   email: string;
+
+  static fromUserEntity(userEntity: UserEntity): UserModel {
+    return {
+      id: userEntity.id,
+      firstName: userEntity.firstName,
+      lastName: userEntity.lastName,
+      email: userEntity.email,
+    };
+  }
 }
