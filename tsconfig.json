@@ -14,7 +14,8 @@
     "paths": {
       "@auth/*": ["src/auth/*"],
       "@shared/*": ["src/shared/*"],
-      "@users/*": ["src/users/*"]
+      "@users/*": ["src/users/*"],
+      "@retailers/*": ["src/retailers/*"]
     }
   }
 }
