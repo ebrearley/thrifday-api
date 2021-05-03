@@ -16,6 +16,9 @@ export class ProductModel {
   price: number;
 
   @Field()
+  packageSize: string;
+
+  @Field()
   reatailer: 'Woolworths' | 'Coles';
 
   static fromWoolworthsProductDto(
@@ -27,6 +30,7 @@ export class ProductModel {
       productPageUrl: `https://www.woolworths.com.au/shop/productdetails/${woolworthsProduct.Stockcode}/${woolworthsProduct.UrlFriendlyName}`,
       price: woolworthsProduct.Price,
       reatailer: 'Woolworths',
+      packageSize: woolworthsProduct.PackageSize,
     };
   }
 }

@@ -12,11 +12,10 @@ export class RetailersResolver {
     @Args({ name: 'input', type: () => RetailerProductSearchTermInput })
     input: RetailerProductSearchTermInput,
   ) {
-    // const product = await this.woolworthsService.getProductByStockCode(425288);
-    const products = await this.woolworthsService.getProductsBySearchTerm(
+    const woolworthsProducts = await this.woolworthsService.getProductsBySearchTerm(
       input.searchTerm,
     );
 
-    return products;
+    return woolworthsProducts;
   }
 }

@@ -1,7 +1,6 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { UserModel } from '@users/models/user.model';
-import { UsersService } from '@users/users.service';
 import { AuthService } from './auth.service';
 import { CtxUser } from './decorators/ctx-user.decorator';
 import { GqlAuthGuard } from './guards/gql-guard.guard';
@@ -11,10 +10,7 @@ import { TokenUserModel } from './models/token-user.model';
 
 @Resolver()
 export class AuthResolver {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Query(() => UserModel, { nullable: true })
   @UseGuards(GqlAuthGuard)
