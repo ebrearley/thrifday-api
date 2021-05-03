@@ -1,9 +1,9 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Context, Mutation, Resolver, Query } from '@nestjs/graphql';
+import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { UserModel } from '@users/models/user.model';
 import { UsersService } from '@users/users.service';
 import { AuthService } from './auth.service';
-import { JwtPayloadDto } from './dto/jwt-payload.dto';
+import { CtxUser } from './decorators/ctx-user.decorator';
 import { GqlAuthGuard } from './guards/gql-guard.guard';
 import { AuthLoginInput } from './inputs/login.input';
 import { AuthRegisterInput } from './inputs/register.input';
@@ -18,8 +18,8 @@ export class AuthResolver {
 
   @Query(() => UserModel, { nullable: true })
   @UseGuards(GqlAuthGuard)
-  async currentUser() {
-    return null;
+  currentUser(@CtxUser() user: UserModel) {
+    return user;
   }
 
   @Mutation(() => TokenUserModel)
