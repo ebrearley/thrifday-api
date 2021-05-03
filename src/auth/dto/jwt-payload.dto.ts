@@ -7,15 +7,11 @@ export class JwtPayloadDto {
   exp?: number;
   iat: number;
   email: string;
-  firstName: string;
-  lastName: string;
 
   static fromUserModel(userModel: UserModel): JwtPayloadDto {
     return {
       sub: userModel.id,
       iat: DateTime.now().toSeconds(),
-      firstName: userModel.firstName,
-      lastName: userModel.lastName,
       email: userModel.email,
     };
   }
