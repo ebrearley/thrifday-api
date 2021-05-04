@@ -6,6 +6,6 @@ export class RetailerProductSearchTermInput {
   @Field()
   searchTerm: string;
 
-  @Field(() => RetailerEnum, { nullable: true })
-  retailer?: RetailerEnum;
+  @Field(() => [RetailerEnum], { nullable: true })
+  retailers?: RetailerEnum[];
 }

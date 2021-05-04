@@ -5,8 +5,8 @@ import { WoolworthsProductDto } from '../woolworths/dtos/woolworths-product.dto'
 
 @ObjectType('Product')
 export class ProductModel {
-  @Field()
-  brand: string;
+  @Field({ nullable: true })
+  brand?: string;
 
   @Field()
   name: string;

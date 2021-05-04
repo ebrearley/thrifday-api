@@ -3,7 +3,7 @@ import { RetailerProductSearchTermInput } from './inputs/product-search-term.inp
 import { ProductModel } from './models/product.model';
 import { WoolworthsService } from './woolworths/woolworths.service';
 import { ColesService } from './coles/coles.service';
-import { flatten, values } from 'lodash';
+import { flatten, map, values } from 'lodash';
 import { RetailerEnum } from '@retailers/@enums/retailer.enum';
 
 @Resolver()
@@ -27,10 +27,14 @@ export class RetailersResolver {
       ),
     };
 
-    if (input.retailer) {
-      const searchService = searchServices[input.retailer];
-      const results = await searchService;
-      return results;
+    if (input.retailers) {
+      const serviceCalls = map(
+        input.retailers,
+        (retailer) => searchServices[retailer],
+      );
+
+      const results = await Promise.all(values(serviceCalls));
+      return flatten(results);
     }
 
     const allResults = await Promise.all(values(searchServices));
