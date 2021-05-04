@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { RetailerEnum } from '@retailers/@enums/retailer.enum';
 import { ColesScrapedProductDto } from '@retailers/coles/dtos/coles-scraped-product.dto';
 import { WoolworthsProductDto } from '../woolworths/dtos/woolworths-product.dto';
 
@@ -26,7 +27,7 @@ export class ProductModel {
   packageSize: string;
 
   @Field()
-  reatailer: 'Woolworths' | 'Coles';
+  reatailer: RetailerEnum;
 
   static fromWoolworthsProductDto(
     woolworthsProduct: WoolworthsProductDto,
@@ -37,7 +38,7 @@ export class ProductModel {
       imageUrl: woolworthsProduct.LargeImageFile,
       productPageUrl: `https://www.woolworths.com.au/shop/productdetails/${woolworthsProduct.Stockcode}/${woolworthsProduct.UrlFriendlyName}`,
       price: woolworthsProduct.Price,
-      reatailer: 'Woolworths',
+      reatailer: RetailerEnum.Woolworths,
       packageSize: woolworthsProduct.PackageSize,
       unitPrice: `${woolworthsProduct.CupPrice} per ${woolworthsProduct.CupMeasure}`,
     };
@@ -54,7 +55,7 @@ export class ProductModel {
       price: colesProduct.price,
       packageSize: colesProduct.packageSize,
       unitPrice: colesProduct.unitPrice,
-      reatailer: 'Coles',
+      reatailer: RetailerEnum.Coles,
     };
   }
 }

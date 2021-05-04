@@ -3,7 +3,8 @@ import { RetailerProductSearchTermInput } from './inputs/product-search-term.inp
 import { ProductModel } from './models/product.model';
 import { WoolworthsService } from './woolworths/woolworths.service';
 import { ColesService } from './coles/coles.service';
-import { flatten } from 'lodash';
+import { flatten, values } from 'lodash';
+import { RetailerEnum } from '@retailers/@enums/retailer.enum';
 
 @Resolver()
 export class RetailersResolver {
@@ -17,11 +18,22 @@ export class RetailersResolver {
     @Args({ name: 'input', type: () => RetailerProductSearchTermInput })
     input: RetailerProductSearchTermInput,
   ) {
-    const allResults = await Promise.all([
-      this.woolworthsService.getProductsBySearchTerm(input.searchTerm),
-      this.colesService.getProductsBySearchTerm(input.searchTerm),
-    ]);
+    const searchServices = {
+      [RetailerEnum.Woolworths]: this.woolworthsService.getProductsBySearchTerm(
+        input.searchTerm,
+      ),
+      [RetailerEnum.Coles]: this.colesService.getProductsBySearchTerm(
+        input.searchTerm,
+      ),
+    };
 
+    if (input.retailer) {
+      const searchService = searchServices[input.retailer];
+      const results = await searchService;
+      return results;
+    }
+
+    const allResults = await Promise.all(values(searchServices));
     return flatten(allResults);
   }
 }
