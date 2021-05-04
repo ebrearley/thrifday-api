@@ -1,5 +1,5 @@
 import { HttpModule, Module } from '@nestjs/common';
-import { WoolworthsService } from './woolworths.service';
+import { ColesService } from './coles.service';
 
 @Module({
   imports: [
@@ -8,7 +8,7 @@ import { WoolworthsService } from './woolworths.service';
       maxRedirects: 5,
     }),
   ],
-  providers: [WoolworthsService],
-  exports: [WoolworthsService],
+  providers: [ColesService],
+  exports: [ColesService],
 })
-export class WoolworthsModule {}
+export class ColesModule {}
