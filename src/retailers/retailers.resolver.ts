@@ -5,12 +5,14 @@ import { WoolworthsService } from './woolworths/woolworths.service';
 import { ColesService } from './coles/coles.service';
 import { flatten, map, values } from 'lodash';
 import { RetailerEnum } from '@retailers/@enums/retailer.enum';
+import { CostcoService } from './costco/costco.service';
 
 @Resolver()
 export class RetailersResolver {
   constructor(
     private readonly woolworthsService: WoolworthsService,
     private readonly colesService: ColesService,
+    private readonly costcoService: CostcoService,
   ) {}
 
   @Query(() => [ProductModel], { name: 'products', defaultValue: [] })
@@ -23,6 +25,9 @@ export class RetailersResolver {
         input.searchTerm,
       ),
       [RetailerEnum.Coles]: this.colesService.getProductsBySearchTerm(
+        input.searchTerm,
+      ),
+      [RetailerEnum.Costco]: this.costcoService.getProductsBySearchTerm(
         input.searchTerm,
       ),
     };

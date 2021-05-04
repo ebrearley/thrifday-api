@@ -13,7 +13,7 @@ export class ColesService {
     )}`;
 
     const products = await this.getSearchPageResults(searchUrl);
-    return map(compact(products), ProductModel.fromColessProductDto);
+    return map(compact(products), ProductModel.fromColesProductDto) || [];
   }
 
   private async getSearchPageResults(
@@ -58,7 +58,7 @@ export class ColesService {
       return productModel;
     });
 
-    return products;
+    return products || [];
   }
 
   private async getPageHtml(url: string) {

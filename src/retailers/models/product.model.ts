@@ -1,6 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { RetailerEnum } from '@retailers/@enums/retailer.enum';
 import { ColesScrapedProductDto } from '@retailers/coles/dtos/coles-scraped-product.dto';
+import { CostcoProductDto } from '@retailers/costco/dtos/costco-product.dto';
+import { first } from 'lodash';
 import { WoolworthsProductDto } from '../woolworths/dtos/woolworths-product.dto';
 
 @ObjectType('Product')
@@ -44,7 +46,7 @@ export class ProductModel {
     };
   }
 
-  static fromColessProductDto(
+  static fromColesProductDto(
     colesProduct: ColesScrapedProductDto,
   ): ProductModel {
     return {
@@ -56,6 +58,20 @@ export class ProductModel {
       packageSize: colesProduct.packageSize,
       unitPrice: colesProduct.unitPrice,
       reatailer: RetailerEnum.Coles,
+    };
+  }
+
+  static fromCoscoProductDto(costcoProduct: CostcoProductDto): ProductModel {
+    return {
+      name: costcoProduct.name,
+      imageUrl: first(costcoProduct.images)?.url
+        ? `https://www.costco.com.au${first(costcoProduct.images)?.url}`
+        : undefined,
+      productPageUrl: `https://www.costco.com.au${costcoProduct.url}`,
+      price: costcoProduct.price?.value || 0,
+      packageSize: '',
+      unitPrice: `${costcoProduct.pricePerUnit?.value} per ${costcoProduct.unitType}`,
+      reatailer: RetailerEnum.Costco,
     };
   }
 }
