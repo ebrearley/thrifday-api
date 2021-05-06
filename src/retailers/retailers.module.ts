@@ -4,9 +4,10 @@ import { RetailersResolver } from './retailers.resolver';
 import { WoolworthsModule } from './woolworths/woolworths.module';
 import { ColesModule } from './coles/coles.module';
 import { CostcoModule } from './costco/costco.module';
+import { IgaModule } from './iga/iga.module';
 
 @Module({
   providers: [RetailersService, RetailersResolver],
-  imports: [WoolworthsModule, ColesModule, CostcoModule],
+  imports: [WoolworthsModule, ColesModule, CostcoModule, IgaModule],
 })
 export class RetailersModule {}

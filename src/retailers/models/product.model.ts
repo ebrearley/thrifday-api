@@ -2,6 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { RetailerEnum } from '@retailers/@enums/retailer.enum';
 import { ColesScrapedProductDto } from '@retailers/coles/dtos/coles-scraped-product.dto';
 import { CostcoProductDto } from '@retailers/costco/dtos/costco-product.dto';
+import { IgaScrapedProductDto } from '@retailers/iga/dtos/iga-scraped-product.dto';
 import { first } from 'lodash';
 import { WoolworthsProductDto } from '../woolworths/dtos/woolworths-product.dto';
 
@@ -61,6 +62,19 @@ export class ProductModel {
     };
   }
 
+  static fromIgaProductDto(igaProduct: IgaScrapedProductDto): ProductModel {
+    return {
+      brand: igaProduct.brand,
+      name: igaProduct.name,
+      imageUrl: igaProduct.imageUrl,
+      productPageUrl: igaProduct.productPageUrl,
+      price: igaProduct.price,
+      packageSize: igaProduct.packageSize,
+      unitPrice: igaProduct.unitPrice,
+      reatailer: RetailerEnum.IGA,
+    };
+  }
+
   static fromCoscoProductDto(costcoProduct: CostcoProductDto): ProductModel {
     return {
       name: costcoProduct.name,
@@ -70,7 +84,9 @@ export class ProductModel {
       productPageUrl: `https://www.costco.com.au${costcoProduct.url}`,
       price: costcoProduct.price?.value || 0,
       packageSize: '',
-      unitPrice: `${costcoProduct.pricePerUnit?.value} per ${costcoProduct.unitType}`,
+      unitPrice: costcoProduct.pricePerUnit?.value
+        ? `${costcoProduct.pricePerUnit?.value} per ${costcoProduct.unitType}`
+        : null,
       reatailer: RetailerEnum.Costco,
     };
   }
