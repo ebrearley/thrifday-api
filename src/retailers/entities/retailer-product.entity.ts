@@ -41,19 +41,12 @@ export class RetailerProductEntity {
 
   // Relationships:
 
-  @OneToOne(
-    (type) => ProductPriceEntity,
-    (productPrice) => productPrice.retailerProduct,
-    { cascade: ['insert', 'update'] },
-  )
-  price: ProductPriceEntity;
-
   @OneToMany(
     (type) => ProductPriceEntity,
     (productPrice) => productPrice.retailerProduct,
     { cascade: ['insert', 'update'] },
   )
-  priceHistory: ProductPriceEntity[];
+  prices: ProductPriceEntity[];
 
   @ManyToOne(
     (type) => MonitoredProductEntity,
@@ -71,10 +64,7 @@ export class RetailerProductEntity {
       unitPrice: retailerProductModel.unitPrice,
       retailer: retailerProductModel.reatailer,
       packageSize: retailerProductModel.packageSize,
-      price: ProductPriceEntity.fromProductPriceModel(
-        retailerProductModel.price,
-      ),
-      priceHistory: retailerProductModel.priceHistory
+      prices: retailerProductModel.priceHistory
         ? map(
             retailerProductModel.priceHistory,
             ProductPriceEntity.fromProductPriceModel,

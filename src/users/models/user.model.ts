@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType, Resolver } from '@nestjs/graphql';
 import { MonitoredProductModel } from '@products/models/monitored-product.model';
 import { UserEntity } from '@users/entities/user.entity';
 import { IsEmail } from 'class-validator';

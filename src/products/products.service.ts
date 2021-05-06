@@ -25,9 +25,20 @@ export class ProductsService {
   ) {}
   async findMonitoredProductsByUserId(userId: string) {
     const monitoredProducts = await this.monitoredProductRepository.find({
-      where: { userId },
+      relations: ['user', 'retailerProducts'],
+      join: {
+        alias: 'monitoredProduct',
+        leftJoinAndSelect: {
+          retailerProducts: 'monitoredProduct.retailerProducts',
+        },
+      },
+      where: { user: { id: userId } },
     });
 
+    // console.log(
+    //   'monitoredProducts',
+    //   map(monitoredProducts, 'retailerProducts'),
+    // );
     return monitoredProducts;
   }
 

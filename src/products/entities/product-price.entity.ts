@@ -23,11 +23,7 @@ export class ProductPriceEntity {
 
   @ManyToOne(
     (type) => RetailerProductEntity,
-    (retailerProduct) => retailerProduct.priceHistory,
-  )
-  @OneToOne(
-    (type) => RetailerProductEntity,
-    (retailerProduct) => retailerProduct.price,
+    (retailerProduct) => retailerProduct.prices,
   )
   retailerProduct: RetailerProductEntity;
 
