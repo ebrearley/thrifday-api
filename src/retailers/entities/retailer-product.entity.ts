@@ -1,6 +1,7 @@
 import { MonitoredProductEntity } from '@products/entities/monitored-product.entity';
 import { ProductPriceEntity } from '@products/entities/product-price.entity';
 import { RetailerEnum } from '@retailers/@enums/retailer.enum';
+import { RetailerProductModel } from '@retailers/models/retailer-product.model';
 import {
   Column,
   Entity,
@@ -9,6 +10,8 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { PartialDeep } from 'type-fest';
+import { map } from 'lodash';
 
 @Entity('retailer_product')
 export class RetailerProductEntity {
@@ -19,10 +22,16 @@ export class RetailerProductEntity {
   url: string;
 
   @Column()
-  imageUrl: string;
+  name: string;
 
-  @Column()
-  unitPrice: string;
+  @Column({ nullable: true })
+  imageUrl?: string;
+
+  @Column({ nullable: true })
+  unitPrice?: string;
+
+  @Column({ nullable: true })
+  packageSize?: string;
 
   @Column({
     type: 'enum',
@@ -35,12 +44,14 @@ export class RetailerProductEntity {
   @OneToOne(
     (type) => ProductPriceEntity,
     (productPrice) => productPrice.retailerProduct,
+    { cascade: ['insert', 'update'] },
   )
   price: ProductPriceEntity;
 
   @OneToMany(
     (type) => ProductPriceEntity,
     (productPrice) => productPrice.retailerProduct,
+    { cascade: ['insert', 'update'] },
   )
   priceHistory: ProductPriceEntity[];
 
@@ -49,4 +60,26 @@ export class RetailerProductEntity {
     (monitoredProduct) => monitoredProduct.retailerProducts,
   )
   product: ProductPriceEntity;
+
+  static fromRetailerProductModel(
+    retailerProductModel: RetailerProductModel,
+  ): PartialDeep<RetailerProductEntity> {
+    return {
+      name: retailerProductModel.name,
+      url: retailerProductModel.productPageUrl,
+      imageUrl: retailerProductModel.imageUrl,
+      unitPrice: retailerProductModel.unitPrice,
+      retailer: retailerProductModel.reatailer,
+      packageSize: retailerProductModel.packageSize,
+      price: ProductPriceEntity.fromProductPriceModel(
+        retailerProductModel.price,
+      ),
+      priceHistory: retailerProductModel.priceHistory
+        ? map(
+            retailerProductModel.priceHistory,
+            ProductPriceEntity.fromProductPriceModel,
+          )
+        : [],
+    };
+  }
 }

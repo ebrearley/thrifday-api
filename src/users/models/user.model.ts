@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { MonitoredProductModel } from '@products/models/monitored-product.model';
 import { UserEntity } from '@users/entities/user.entity';
 import { IsEmail } from 'class-validator';
 
@@ -10,6 +11,12 @@ export class UserModel {
   @Field()
   @IsEmail()
   email: string;
+
+  @Field((type) => [MonitoredProductModel], {
+    nullable: true,
+    defaultValue: [],
+  })
+  monitoredProducts?: MonitoredProductModel[];
 
   static fromUserEntity(userEntity: UserEntity): UserModel {
     return {

@@ -1,17 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { ProductModel } from '@retailers/models/product.model';
-import { IgaScrapedProductDto } from './dtos/iga-scraped-product.dto';
 import * as cheerio from 'cheerio';
 import * as puppeteer from 'puppeteer';
 import { map, toNumber, replace, compact } from 'lodash';
+import { IgaScrapedProductDto } from './dtos/iga-scraped-product.dto';
+import { ProductDto } from '@products/dtos/product.dto';
 
 @Injectable()
 export class IgaService {
-  async getProductsBySearchTerm(searchTerm: string): Promise<ProductModel[]> {
+  async getProductsBySearchTerm(searchTerm: string): Promise<ProductDto[]> {
     const products = await this.getSearchPageResults(searchTerm);
-    console.log(products);
-
-    return map(compact(products), ProductModel.fromColesProductDto) || [];
+    return map(compact(products), ProductDto.fromIgaProductDto) || [];
   }
 
   private async getPageHtml(searchTerm: string) {

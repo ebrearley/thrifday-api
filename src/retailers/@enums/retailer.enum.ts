@@ -7,4 +7,4 @@ export enum RetailerEnum {
   IGA = 'IGA',
 }
 
-registerEnumType(RetailerEnum, { name: 'Retailer' });
+registerEnumType(RetailerEnum, { name: 'RetailerEnum' });

@@ -1,9 +1,5 @@
-import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
-import { UserModel } from '@users/models/user.model';
+import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
-import { CtxUser } from './decorators/ctx-user.decorator';
-import { GqlAuthGuard } from './guards/gql-guard.guard';
 import { AuthLoginInput } from './inputs/login.input';
 import { AuthRegisterInput } from './inputs/register.input';
 import { TokenUserModel } from './models/token-user.model';
@@ -11,12 +7,6 @@ import { TokenUserModel } from './models/token-user.model';
 @Resolver()
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
-
-  @Query(() => UserModel, { nullable: true })
-  @UseGuards(GqlAuthGuard)
-  currentUser(@CtxUser() user: UserModel) {
-    return user;
-  }
 
   @Mutation(() => TokenUserModel)
   async register(

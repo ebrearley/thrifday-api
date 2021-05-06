@@ -18,5 +18,6 @@ import { RetailerProductEntity } from './entities/retailer-product.entity';
     IgaModule,
   ],
   providers: [RetailersService, RetailersResolver],
+  exports: [RetailersService],
 })
 export class RetailersModule {}

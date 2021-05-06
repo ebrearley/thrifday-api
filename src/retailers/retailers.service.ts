@@ -5,6 +5,8 @@ import { WoolworthsService } from './woolworths/woolworths.service';
 import { RetailerEnum } from './@enums/retailer.enum';
 import { flatten, map, values } from 'lodash';
 import { IgaService } from './iga/iga.service';
+import { RetailerProductModel } from './models/retailer-product.model';
+import { ProductDto } from '@products/dtos/product.dto';
 
 @Injectable()
 export class RetailersService {
@@ -17,22 +19,15 @@ export class RetailersService {
 
   async searchForProducts(searchTerm: string, retailers?: RetailerEnum[]) {
     const searchServices = {
-      [RetailerEnum.Woolworths]: this.woolworthsService.getProductsBySearchTerm(
-        searchTerm,
-      ),
-      [RetailerEnum.Coles]: this.colesService.getProductsBySearchTerm(
-        searchTerm,
-      ),
-      [RetailerEnum.Costco]: this.costcoService.getProductsBySearchTerm(
-        searchTerm,
-      ),
-      [RetailerEnum.IGA]: this.igaService.getProductsBySearchTerm(searchTerm),
+      [RetailerEnum.Woolworths]: this.woolworthsService.getProductsBySearchTerm,
+      [RetailerEnum.Coles]: this.colesService.getProductsBySearchTerm,
+      [RetailerEnum.Costco]: this.costcoService.getProductsBySearchTerm,
+      [RetailerEnum.IGA]: this.igaService.getProductsBySearchTerm,
     };
 
     if (retailers) {
-      const serviceCalls = map(
-        retailers,
-        (retailer) => searchServices[retailer],
+      const serviceCalls = map(retailers, (retailer) =>
+        searchServices[retailer](searchTerm),
       );
 
       const results = await Promise.all(values(serviceCalls));
@@ -41,5 +36,19 @@ export class RetailersService {
 
     const allResults = await Promise.all(values(searchServices));
     return flatten(allResults);
+  }
+
+  async getProductDetails(
+    url: string,
+    retailer: RetailerEnum,
+  ): Promise<RetailerProductModel> {
+    if (retailer === RetailerEnum.Woolworths) {
+      const productDetils: ProductDto = await this.woolworthsService.getProductByUrl(
+        url,
+      );
+      return RetailerProductModel.fromProductDto(productDetils);
+    }
+
+    return null;
   }
 }

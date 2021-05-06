@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { ProductModel } from '../models/product.model';
 import * as puppeteer from 'puppeteer';
 import * as cheerio from 'cheerio';
 import { map, toNumber, compact } from 'lodash';
 import { ColesScrapedProductDto } from './dtos/coles-scraped-product.dto';
+import { ProductDto } from '@products/dtos/product.dto';
 
 @Injectable()
 export class ColesService {
-  async getProductsBySearchTerm(searchTerm: string): Promise<ProductModel[]> {
+  async getProductsBySearchTerm(searchTerm: string): Promise<ProductDto[]> {
     const searchUrl = `https://shop.coles.com.au/a/burwood-east/everything/search/${encodeURI(
       searchTerm,
     )}`;
 
     const products = await this.getSearchPageResults(searchUrl);
-    return map(compact(products), ProductModel.fromColesProductDto) || [];
+    return map(compact(products), ProductDto.fromColesProductDto) || [];
   }
 
   private async getSearchPageResults(

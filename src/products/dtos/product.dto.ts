@@ -1,40 +1,42 @@
-import { Field, ObjectType } from '@nestjs/graphql';
 import { RetailerEnum } from '@retailers/@enums/retailer.enum';
 import { ColesScrapedProductDto } from '@retailers/coles/dtos/coles-scraped-product.dto';
 import { CostcoProductDto } from '@retailers/costco/dtos/costco-product.dto';
 import { IgaScrapedProductDto } from '@retailers/iga/dtos/iga-scraped-product.dto';
+import { IsDecimal, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { first } from 'lodash';
-import { WoolworthsProductDto } from '../woolworths/dtos/woolworths-product.dto';
+import { WoolworthsProductDto } from '../../retailers/woolworths/dtos/woolworths-product.dto';
 
-@ObjectType('Product')
-export class ProductModel {
-  @Field({ nullable: true })
+export class ProductDto {
+  @IsString()
   brand?: string;
 
-  @Field()
+  @IsNotEmpty()
+  @IsString()
   name: string;
 
-  @Field({ nullable: true })
+  @IsString()
   imageUrl?: string;
 
-  @Field()
+  @IsNotEmpty()
+  @IsString()
   productPageUrl: string;
 
-  @Field()
+  @IsNotEmpty()
+  @IsDecimal()
   price: number;
 
-  @Field({ nullable: true })
+  @IsString()
   unitPrice?: string;
 
-  @Field()
-  packageSize: string;
+  @IsString()
+  packageSize?: string;
 
-  @Field()
+  @IsEnum(RetailerEnum)
   reatailer: RetailerEnum;
 
   static fromWoolworthsProductDto(
     woolworthsProduct: WoolworthsProductDto,
-  ): ProductModel {
+  ): ProductDto {
     return {
       brand: woolworthsProduct.Brand,
       name: woolworthsProduct.Name,
@@ -47,9 +49,7 @@ export class ProductModel {
     };
   }
 
-  static fromColesProductDto(
-    colesProduct: ColesScrapedProductDto,
-  ): ProductModel {
+  static fromColesProductDto(colesProduct: ColesScrapedProductDto): ProductDto {
     return {
       brand: colesProduct.brand,
       name: colesProduct.name,
@@ -62,7 +62,7 @@ export class ProductModel {
     };
   }
 
-  static fromIgaProductDto(igaProduct: IgaScrapedProductDto): ProductModel {
+  static fromIgaProductDto(igaProduct: IgaScrapedProductDto): ProductDto {
     return {
       brand: igaProduct.brand,
       name: igaProduct.name,
@@ -75,7 +75,7 @@ export class ProductModel {
     };
   }
 
-  static fromCoscoProductDto(costcoProduct: CostcoProductDto): ProductModel {
+  static fromCoscoProductDto(costcoProduct: CostcoProductDto): ProductDto {
     return {
       name: costcoProduct.name,
       imageUrl: first(costcoProduct.images)?.url

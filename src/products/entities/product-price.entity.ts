@@ -1,3 +1,4 @@
+import { ProductPriceModel } from '@products/models/product-price.model';
 import { RetailerProductEntity } from '@retailers/entities/retailer-product.entity';
 import {
   Column,
@@ -29,4 +30,13 @@ export class ProductPriceEntity {
     (retailerProduct) => retailerProduct.price,
   )
   retailerProduct: RetailerProductEntity;
+
+  static fromProductPriceModel(
+    productPriceModel: ProductPriceModel,
+  ): Partial<ProductPriceEntity> {
+    return {
+      observedAtDateTime: productPriceModel.observedAtDateTime,
+      value: productPriceModel.value,
+    };
+  }
 }
