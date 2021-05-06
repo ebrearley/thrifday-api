@@ -15,7 +15,8 @@
       "@auth/*": ["src/auth/*"],
       "@shared/*": ["src/shared/*"],
       "@users/*": ["src/users/*"],
-      "@retailers/*": ["src/retailers/*"]
+      "@retailers/*": ["src/retailers/*"],
+      "@products/*": ["src/products/*"]
     }
   }
 }
