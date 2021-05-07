@@ -4,6 +4,7 @@ import { RetailerEnum } from '@retailers/@enums/retailer.enum';
 import { v5 as uuidv5 } from 'uuid';
 import { DateTime } from 'luxon';
 import { ProductPriceModel } from '@products/models/product-price.model';
+import { RetailerProductEntity } from '@retailers/entities/retailer-product.entity';
 
 @ObjectType('RetailerProduct')
 export class RetailerProductModel {
@@ -29,10 +30,19 @@ export class RetailerProductModel {
   packageSize?: string;
 
   @Field((type) => RetailerEnum)
-  reatailer: RetailerEnum;
+  retailer: RetailerEnum;
 
   @Field((type) => [ProductPriceModel])
   prices: ProductPriceModel[];
+
+  static fromRetailerProductEntity(
+    retailerProductEntity: RetailerProductEntity,
+  ): RetailerProductModel {
+    return {
+      ...retailerProductEntity,
+      productPageUrl: retailerProductEntity.url,
+    };
+  }
 
   static fromProductDto(productDto: ProductDto): RetailerProductModel {
     const productId = uuidv5(productDto.productPageUrl, uuidv5.URL);
@@ -47,7 +57,7 @@ export class RetailerProductModel {
       name: productDto.name,
       imageUrl: productDto.imageUrl,
       productPageUrl: productDto.productPageUrl,
-      reatailer: productDto.reatailer,
+      retailer: productDto.reatailer,
       packageSize: productDto.packageSize,
       unitPrice: productDto.unitPrice,
       prices: [

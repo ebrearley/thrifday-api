@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RetailerEnum } from '@retailers/@enums/retailer.enum';
 import { RetailerProductEntity } from '@retailers/entities/retailer-product.entity';
+import { RetailerProductModel } from '@retailers/models/retailer-product.model';
 import { RetailersService } from '@retailers/retailers.service';
 import { UserModel } from '@users/models/user.model';
 import { sortBy, last, map } from 'lodash';
@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { MonitoredProductEntity } from './entities/monitored-product.entity';
 import { ProductPriceEntity } from './entities/product-price.entity';
 import { CreateMonitoredProductInput } from './inputs/create-monitored-product.input';
+import { MonitoredProductModel } from './models/monitored-product.model';
 
 @Injectable()
 export class ProductsService {
@@ -37,11 +38,10 @@ export class ProductsService {
       where: { user: { id: userId } },
     });
 
-    // console.log(
-    //   'monitoredProducts',
-    //   map(monitoredProducts, 'retailerProducts'),
-    // );
-    return monitoredProducts;
+    return map(
+      monitoredProducts,
+      MonitoredProductModel.fromMonitoredrProductEntity,
+    );
   }
 
   async create(
@@ -73,6 +73,12 @@ export class ProductsService {
       },
     );
 
-    return this.monitoredProductRepository.save(createdMonitoredProduct);
+    const monitoredProductEntity = await this.monitoredProductRepository.save(
+      createdMonitoredProduct,
+    );
+
+    return MonitoredProductModel.fromMonitoredrProductEntity(
+      monitoredProductEntity,
+    );
   }
 }

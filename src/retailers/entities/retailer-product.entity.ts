@@ -61,7 +61,7 @@ export class RetailerProductEntity {
       url: retailerProductModel.productPageUrl,
       imageUrl: retailerProductModel.imageUrl,
       unitPrice: retailerProductModel.unitPrice,
-      retailer: retailerProductModel.reatailer,
+      retailer: retailerProductModel.retailer,
       packageSize: retailerProductModel.packageSize,
       prices: retailerProductModel.prices
         ? map(

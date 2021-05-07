@@ -23,11 +23,6 @@ export class UsersResolver {
       user.id,
     );
 
-    console.log(
-      'monitoredProducts',
-      map(monitoredProducts, 'retailerProducts'),
-    );
-
     return monitoredProducts;
   }
 }
