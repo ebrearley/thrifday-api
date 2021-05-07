@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RetailerProductEntity } from '@retailers/entities/retailer-product.entity';
-import { RetailerProductModel } from '@retailers/models/retailer-product.model';
 import { RetailersService } from '@retailers/retailers.service';
 import { UserModel } from '@users/models/user.model';
 import { sortBy, last, map } from 'lodash';
 import { Repository } from 'typeorm';
 import { MonitoredProductEntity } from './entities/monitored-product.entity';
-import { ProductPriceEntity } from './entities/product-price.entity';
 import { CreateMonitoredProductInput } from './inputs/create-monitored-product.input';
 import { MonitoredProductModel } from './models/monitored-product.model';
 
@@ -16,13 +14,6 @@ export class ProductsService {
   constructor(
     @InjectRepository(MonitoredProductEntity)
     private readonly monitoredProductRepository: Repository<MonitoredProductEntity>,
-
-    @InjectRepository(ProductPriceEntity)
-    private readonly productPriceRepository: Repository<ProductPriceEntity>,
-
-    @InjectRepository(RetailerProductEntity)
-    private readonly retailerProductRepository: Repository<RetailerProductEntity>,
-
     private readonly retailersService: RetailersService,
   ) {}
   async findMonitoredProductsByUserId(userId: string) {
@@ -59,7 +50,7 @@ export class ProductsService {
       }),
     );
 
-    const name = last(sortBy(products, 'reatailer')).name;
+    const name = last(sortBy(products, 'retailer')).name;
     const retailerProducts = map(
       products,
       RetailerProductEntity.fromRetailerProductModel,

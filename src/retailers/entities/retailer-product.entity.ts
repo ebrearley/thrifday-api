@@ -24,6 +24,9 @@ export class RetailerProductEntity {
   name: string;
 
   @Column({ nullable: true })
+  brand?: string;
+
+  @Column({ nullable: true })
   imageUrl?: string;
 
   @Column({ nullable: true })
@@ -62,6 +65,7 @@ export class RetailerProductEntity {
       imageUrl: retailerProductModel.imageUrl,
       unitPrice: retailerProductModel.unitPrice,
       retailer: retailerProductModel.retailer,
+      brand: retailerProductModel.brand,
       packageSize: retailerProductModel.packageSize,
       prices: retailerProductModel.prices
         ? map(

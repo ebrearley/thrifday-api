@@ -32,7 +32,7 @@ export class ProductDto {
   packageSize?: string;
 
   @IsEnum(RetailerEnum)
-  reatailer: RetailerEnum;
+  retailer: RetailerEnum;
 
   static fromWoolworthsProductDto(
     woolworthsProduct: WoolworthsProductDto,
@@ -43,7 +43,7 @@ export class ProductDto {
       imageUrl: woolworthsProduct.LargeImageFile,
       productPageUrl: `https://www.woolworths.com.au/shop/productdetails/${woolworthsProduct.Stockcode}/${woolworthsProduct.UrlFriendlyName}`,
       price: woolworthsProduct.Price,
-      reatailer: RetailerEnum.Woolworths,
+      retailer: RetailerEnum.Woolworths,
       packageSize: woolworthsProduct.PackageSize,
       unitPrice: `${woolworthsProduct.CupPrice} per ${woolworthsProduct.CupMeasure}`,
     };
@@ -58,7 +58,7 @@ export class ProductDto {
       price: colesProduct.price,
       packageSize: colesProduct.packageSize,
       unitPrice: colesProduct.unitPrice,
-      reatailer: RetailerEnum.Coles,
+      retailer: RetailerEnum.Coles,
     };
   }
 
@@ -71,7 +71,7 @@ export class ProductDto {
       price: igaProduct.price,
       packageSize: igaProduct.packageSize,
       unitPrice: igaProduct.unitPrice,
-      reatailer: RetailerEnum.IGA,
+      retailer: RetailerEnum.IGA,
     };
   }
 
@@ -87,7 +87,7 @@ export class ProductDto {
       unitPrice: costcoProduct.pricePerUnit?.value
         ? `${costcoProduct.pricePerUnit?.value} per ${costcoProduct.unitType}`
         : null,
-      reatailer: RetailerEnum.Costco,
+      retailer: RetailerEnum.Costco,
     };
   }
 }

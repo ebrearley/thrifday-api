@@ -57,7 +57,7 @@ export class RetailerProductModel {
       name: productDto.name,
       imageUrl: productDto.imageUrl,
       productPageUrl: productDto.productPageUrl,
-      retailer: productDto.reatailer,
+      retailer: productDto.retailer,
       packageSize: productDto.packageSize,
       unitPrice: productDto.unitPrice,
       prices: [
