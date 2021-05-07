@@ -7,7 +7,6 @@ import {
   Entity,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { PartialDeep } from 'type-fest';
@@ -64,9 +63,9 @@ export class RetailerProductEntity {
       unitPrice: retailerProductModel.unitPrice,
       retailer: retailerProductModel.reatailer,
       packageSize: retailerProductModel.packageSize,
-      prices: retailerProductModel.priceHistory
+      prices: retailerProductModel.prices
         ? map(
-            retailerProductModel.priceHistory,
+            retailerProductModel.prices,
             ProductPriceEntity.fromProductPriceModel,
           )
         : [],

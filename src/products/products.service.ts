@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { RetailerEnum } from '@retailers/@enums/retailer.enum';
 import { RetailerProductEntity } from '@retailers/entities/retailer-product.entity';
 import { RetailersService } from '@retailers/retailers.service';
 import { UserModel } from '@users/models/user.model';
@@ -25,11 +26,12 @@ export class ProductsService {
   ) {}
   async findMonitoredProductsByUserId(userId: string) {
     const monitoredProducts = await this.monitoredProductRepository.find({
-      relations: ['user', 'retailerProducts'],
+      relations: ['user', 'retailerProducts', 'retailerProducts.prices'],
       join: {
         alias: 'monitoredProduct',
         leftJoinAndSelect: {
           retailerProducts: 'monitoredProduct.retailerProducts',
+          prices: 'retailerProducts.prices',
         },
       },
       where: { user: { id: userId } },

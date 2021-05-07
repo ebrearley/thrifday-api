@@ -22,7 +22,6 @@ export class ProductsResolver {
       return null;
     }
     const monitoredProduct = await this.productsService.create(input, user);
-    console.log(monitoredProduct);
     return monitoredProduct;
   }
 }

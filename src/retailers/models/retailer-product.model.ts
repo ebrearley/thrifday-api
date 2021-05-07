@@ -28,14 +28,11 @@ export class RetailerProductModel {
   @Field({ nullable: true })
   packageSize?: string;
 
-  @Field()
+  @Field((type) => RetailerEnum)
   reatailer: RetailerEnum;
 
-  @Field((type) => ProductPriceModel)
-  price: ProductPriceModel;
-
-  @Field((type) => [ProductPriceModel], { nullable: true, defaultValue: [] })
-  priceHistory?: ProductPriceModel[];
+  @Field((type) => [ProductPriceModel])
+  prices: ProductPriceModel[];
 
   static fromProductDto(productDto: ProductDto): RetailerProductModel {
     const productId = uuidv5(productDto.productPageUrl, uuidv5.URL);
@@ -53,12 +50,13 @@ export class RetailerProductModel {
       reatailer: productDto.reatailer,
       packageSize: productDto.packageSize,
       unitPrice: productDto.unitPrice,
-      priceHistory: [],
-      price: {
-        id: priceId,
-        observedAtDateTime: DateTime.now().toJSDate(),
-        value: productDto.price,
-      },
+      prices: [
+        {
+          id: priceId,
+          observedAtDateTime: DateTime.now().toJSDate(),
+          value: productDto.price,
+        },
+      ],
     };
   }
 }

@@ -5,6 +5,7 @@ import { Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { MonitoredProductModel } from '@products/models/monitored-product.model';
 import { ProductsService } from '@products/products.service';
 import { UserModel } from './models/user.model';
+import { map } from 'lodash';
 
 @Resolver((of) => UserModel)
 export class UsersResolver {
@@ -20,6 +21,11 @@ export class UsersResolver {
   async monitoredProducts(@Parent() user: UserModel) {
     const monitoredProducts = await this.productService.findMonitoredProductsByUserId(
       user.id,
+    );
+
+    console.log(
+      'monitoredProducts',
+      map(monitoredProducts, 'retailerProducts'),
     );
 
     return monitoredProducts;
