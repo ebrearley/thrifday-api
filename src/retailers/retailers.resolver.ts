@@ -1,8 +1,7 @@
-import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Args, Query, Resolver } from '@nestjs/graphql';
 import { ProductPageInput } from '@products/inputs/product-page.input';
 import { RetailerProductModel } from '@retailers/models/retailer-product.model';
 import { map } from 'lodash';
-import { RetailerEnum } from './@enums/retailer.enum';
 import { RetailerProductSearchTermInput } from './inputs/product-search-term.input';
 import { RetailersService } from './retailers.service';
 
