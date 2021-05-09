@@ -1,0 +1,26 @@
+type User {
+  id: ID
+  email: String
+  monitoredProducts: MonitoredProduct
+}
+
+type MonitoredProduct {
+  id: ID
+  retailerProducts: RetailerProduct[]
+  #Resolve# cheapestProduct: RetailerProduct
+}
+
+type RetailerProduct {
+  id: ID
+  imageUrl: String
+  url: String
+  retailer: Retailer
+  price: ProductPrice
+  priceHistory: ProductPrice
+}
+
+type ProductPrice {
+  id: ID
+  value: Decimal
+  observedAtDateTime: Date
+}

@@ -1,19 +1,34 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { MonitoredProductEntity } from '@products/entities/monitored-product.entity';
 
-@Entity()
-export class User {
+@Entity('user')
+export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  firstName: string;
-
-  @Column({ nullable: true })
-  lastName: string;
-
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
   password: string;
+
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+
+  // Relationships:
+
+  @OneToMany(
+    (type) => MonitoredProductEntity,
+    (monitoredProduct) => monitoredProduct.user,
+  )
+  products: MonitoredProductEntity[];
 }

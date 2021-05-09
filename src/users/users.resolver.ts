@@ -1,38 +1,28 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { GetUserArgs } from './dtos/get-user.args';
-import { CreateUserInput } from './inputs/create-user.input';
-import { UpdateUserInput } from './inputs/update-user-input';
-import { User } from './models/user.model';
-import { UsersService } from './users.service';
+import { CtxUser } from '@auth/decorators/ctx-user.decorator';
+import { GqlAuthGuard } from '@auth/guards/gql-guard.guard';
+import { UseGuards } from '@nestjs/common';
+import { Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { MonitoredProductModel } from '@products/models/monitored-product.model';
+import { ProductsService } from '@products/products.service';
+import { UserModel } from './models/user.model';
+import { map } from 'lodash';
 
-@Resolver()
+@Resolver((of) => UserModel)
 export class UsersResolver {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly productService: ProductsService) {}
 
-  @Query(() => [User], { name: 'users', defaultValue: [] })
-  async getUsers() {
-    const users = await this.usersService.findAll();
-    return users;
-  }
-
-  @Query(() => User, { name: 'user' })
-  async getUser(@Args() getUserArgs: GetUserArgs) {
-    const user = await this.usersService.findOne(getUserArgs.id);
+  @Query(() => UserModel, { nullable: true })
+  @UseGuards(GqlAuthGuard)
+  currentUser(@CtxUser() user: UserModel) {
     return user;
   }
 
-  @Mutation(() => User, { name: 'userCreate' })
-  async createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-    const user = await this.usersService.create(createUserInput);
-    return user;
-  }
-
-  @Mutation(() => User, { name: 'userUpdate' })
-  async updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
-    const user = await this.usersService.update(
-      updateUserInput.id,
-      updateUserInput,
+  @ResolveField('monitoredProducts', (returns) => [MonitoredProductModel])
+  async monitoredProducts(@Parent() user: UserModel) {
+    const monitoredProducts = await this.productService.findMonitoredProductsByUserId(
+      user.id,
     );
-    return user;
+
+    return monitoredProducts;
   }
 }
