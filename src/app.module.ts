@@ -8,6 +8,8 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { RetailersModule } from './retailers/retailers.module';
 import { ProductsModule } from './products/products.module';
+import { PriceMonitorModule } from './price-monitor/price-monitor.module';
+import { PriceModule } from './price/price.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -32,6 +34,8 @@ import { ProductsModule } from './products/products.module';
     AuthModule,
     RetailersModule,
     ProductsModule,
+    PriceMonitorModule,
+    PriceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

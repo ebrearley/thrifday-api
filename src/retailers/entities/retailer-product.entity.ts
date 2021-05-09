@@ -41,6 +41,9 @@ export class RetailerProductEntity {
   })
   retailer: RetailerEnum;
 
+  @Column({ nullable: true })
+  isUnavailable?: boolean;
+
   // Relationships:
 
   @OneToMany(
@@ -54,7 +57,7 @@ export class RetailerProductEntity {
     (type) => MonitoredProductEntity,
     (monitoredProduct) => monitoredProduct.retailerProducts,
   )
-  product: ProductPriceEntity;
+  monitoredProduct: MonitoredProductEntity;
 
   static fromRetailerProductModel(
     retailerProductModel: RetailerProductModel,
@@ -73,6 +76,7 @@ export class RetailerProductEntity {
             ProductPriceEntity.fromProductPriceModel,
           )
         : [],
+      isUnavailable: retailerProductModel.isUnavailable,
     };
   }
 }

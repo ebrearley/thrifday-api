@@ -1,6 +1,8 @@
 import { ProductPriceModel } from '@products/models/product-price.model';
 import { RetailerProductEntity } from '@retailers/entities/retailer-product.entity';
+import { toNumber } from 'lodash';
 import {
+  AfterLoad,
   Column,
   Entity,
   ManyToOne,
@@ -27,12 +29,17 @@ export class ProductPriceEntity {
   )
   retailerProduct: RetailerProductEntity;
 
+  @AfterLoad() _convertNumerics() {
+    // 64 bits truncated to 53 is fine in my case
+    this.value = parseFloat(this.value as any);
+  }
+
   static fromProductPriceModel(
     productPriceModel: ProductPriceModel,
   ): Partial<ProductPriceEntity> {
     return {
       observedAtDateTime: productPriceModel.observedAtDateTime,
-      value: productPriceModel.value,
+      value: toNumber(productPriceModel.value),
     };
   }
 }

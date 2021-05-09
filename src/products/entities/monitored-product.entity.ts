@@ -20,7 +20,7 @@ export class MonitoredProductEntity {
 
   @OneToMany(
     (type) => RetailerProductEntity,
-    (retailerProduct) => retailerProduct.product,
+    (retailerProduct) => retailerProduct.monitoredProduct,
     { cascade: ['insert', 'update'] },
   )
   retailerProducts: RetailerProductEntity[];

@@ -6,6 +6,7 @@ import { RetailersService } from '@retailers/retailers.service';
 import { UserModel } from '@users/models/user.model';
 import { sortBy, last, map, reject, includes, forEach } from 'lodash';
 import { Repository } from 'typeorm';
+import { RetailerProductLoadOptionsArgs } from './@types/retailer-product-load-options-args.type';
 import { MonitoredProductEntity } from './entities/monitored-product.entity';
 import { AddProductPageToMonitoredProductInput } from './inputs/add-retailer-product-to-monitored-product.input';
 import { CreateMonitoredProductInput } from './inputs/create-monitored-product.input';
@@ -135,7 +136,7 @@ export class ProductsService {
     );
   }
 
-  private getMonitoredProductLoadOptions() {
+  getMonitoredProductLoadOptions() {
     return {
       relations: ['user', 'retailerProducts', 'retailerProducts.prices'],
       join: {
@@ -144,6 +145,32 @@ export class ProductsService {
           retailerProducts: 'monitoredProduct.retailerProducts',
           prices: 'retailerProducts.prices',
         },
+      },
+    };
+  }
+
+  getRetailerProductLoadOptions(args?: RetailerProductLoadOptionsArgs) {
+    const relations = ['prices'];
+    const leftJoinAndSelect: {
+      prices: string;
+      monitoredProduct?: string;
+      user?: string;
+    } = {
+      prices: 'retailerProduct.prices',
+    };
+
+    if (args?.includeUser) {
+      relations.push('monitoredProduct');
+      relations.push('monitoredProduct.user');
+      leftJoinAndSelect.monitoredProduct = 'retailerProduct.monitoredProduct';
+      leftJoinAndSelect.user = 'monitoredProduct.user';
+    }
+
+    return {
+      relations,
+      join: {
+        alias: 'retailerProduct',
+        leftJoinAndSelect,
       },
     };
   }

@@ -21,9 +21,8 @@ export class ProductDto {
   @IsString()
   productPageUrl: string;
 
-  @IsNotEmpty()
   @IsDecimal()
-  price: number;
+  price?: number;
 
   @IsString()
   unitPrice?: string;

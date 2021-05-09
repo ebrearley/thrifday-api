@@ -32,8 +32,11 @@ export class RetailerProductModel {
   @Field((type) => RetailerEnum)
   retailer: RetailerEnum;
 
-  @Field((type) => [ProductPriceModel])
-  prices: ProductPriceModel[];
+  @Field({ nullable: true })
+  isUnavailable?: boolean;
+
+  @Field((type) => [ProductPriceModel], { nullable: true })
+  prices?: ProductPriceModel[];
 
   static fromRetailerProductEntity(
     retailerProductEntity: RetailerProductEntity,
@@ -46,8 +49,9 @@ export class RetailerProductModel {
 
   static fromProductDto(productDto: ProductDto): RetailerProductModel {
     const productId = uuidv5(productDto.productPageUrl, uuidv5.URL);
+    const observedAtDateTime = DateTime.now().toJSDate();
     const priceId = uuidv5(
-      `${productDto.productPageUrl}${productDto.price}`,
+      `${productDto.productPageUrl}${productDto.price}${observedAtDateTime}`,
       productId,
     );
 
@@ -60,13 +64,16 @@ export class RetailerProductModel {
       retailer: productDto.retailer,
       packageSize: productDto.packageSize,
       unitPrice: productDto.unitPrice,
-      prices: [
-        {
-          id: priceId,
-          observedAtDateTime: DateTime.now().toJSDate(),
-          value: productDto.price,
-        },
-      ],
+      prices: productDto.price
+        ? [
+            {
+              id: priceId,
+              observedAtDateTime,
+              value: productDto.price,
+            },
+          ]
+        : null,
+      isUnavailable: productDto.price ? null : true,
     };
   }
 }
