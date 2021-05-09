@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { PriceService } from './price.service';
-import { PriceResolver } from './price.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MonitoredProductEntity } from '@products/entities/monitored-product.entity';
 import { ProductPriceEntity } from '@products/entities/product-price.entity';
@@ -18,6 +17,7 @@ import { RetailersModule } from '@retailers/retailers.module';
     ProductsModule,
     RetailersModule,
   ],
-  providers: [PriceService, PriceResolver],
+  providers: [PriceService],
+  exports: [PriceService],
 })
 export class PriceModule {}

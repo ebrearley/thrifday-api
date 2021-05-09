@@ -18,7 +18,7 @@ export class PriceService {
     private readonly retailersService: RetailersService,
   ) {}
 
-  async updateForAllProducts() {
+  async UpdatePriceForAllProducts() {
     const products = await this.retailerProductRepository.find({
       where: {
         monitoredProduct: Not(IsNull()),

@@ -1,17 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { MonitoredProductEntity } from '@products/entities/monitored-product.entity';
-import { ProductsService } from '@products/products.service';
-import { Repository } from 'typeorm';
+import { PriceService } from 'src/price/price.service';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class PriceMonitorService {
-  constructor(
-    @InjectRepository(MonitoredProductEntity)
-    private readonly monitoredProductRepository: Repository<MonitoredProductEntity>,
+  constructor(private readonly priceService: PriceService) {}
 
-    private readonly productsService: ProductsService,
-  ) {}
-
-  // getPriceByProduct() {}
+  @Cron(CronExpression.EVERY_DAY_AT_3PM)
+  async checkAndUpdatePrices() {
+    await this.priceService.UpdatePriceForAllProducts();
+  }
 }
