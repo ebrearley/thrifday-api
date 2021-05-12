@@ -39,7 +39,7 @@ export class ProductDto {
     return {
       brand: woolworthsProduct.Brand,
       name: woolworthsProduct.Name,
-      imageUrl: woolworthsProduct.LargeImageFile,
+      imageUrl: woolworthsProduct.MediumImageFile,
       productPageUrl: `https://www.woolworths.com.au/shop/productdetails/${woolworthsProduct.Stockcode}/${woolworthsProduct.UrlFriendlyName}`,
       price: woolworthsProduct.Price,
       retailer: RetailerEnum.Woolworths,

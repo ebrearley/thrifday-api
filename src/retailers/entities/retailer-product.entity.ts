@@ -49,13 +49,14 @@ export class RetailerProductEntity {
   @OneToMany(
     (type) => ProductPriceEntity,
     (productPrice) => productPrice.retailerProduct,
-    { cascade: ['insert', 'update'] },
+    { cascade: ['insert', 'update', 'remove'] },
   )
   prices: ProductPriceEntity[];
 
   @ManyToOne(
     (type) => MonitoredProductEntity,
     (monitoredProduct) => monitoredProduct.retailerProducts,
+    { onDelete: 'CASCADE' },
   )
   monitoredProduct: MonitoredProductEntity;
 

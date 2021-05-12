@@ -4,15 +4,17 @@ import { RetailerEnum } from '@retailers/@enums/retailer.enum';
 import { RetailerProductEntity } from '@retailers/entities/retailer-product.entity';
 import { RetailersService } from '@retailers/retailers.service';
 import { UserModel } from '@users/models/user.model';
-import { sortBy, last, map, reject, includes, forEach } from 'lodash';
+import { sortBy, last, map, reject, includes, forEach, compact } from 'lodash';
 import { Repository } from 'typeorm';
 import { RetailerProductLoadOptionsArgs } from './@types/retailer-product-load-options-args.type';
 import { MonitoredProductEntity } from './entities/monitored-product.entity';
 import { AddProductPageToMonitoredProductInput } from './inputs/add-retailer-product-to-monitored-product.input';
 import { CreateMonitoredProductInput } from './inputs/create-monitored-product.input';
 import { ProductPageInput } from './inputs/product-page.input';
+import { RemoveMonitoredProductInput } from './inputs/remove-monitored-product.input';
 import { RemoveProductPagesFromMonitoredProductInput } from './inputs/remove-product-pages-from-monitored-product.input';
 import { MonitoredProductModel } from './models/monitored-product.model';
+import { RemoveResultModel } from './models/remove-result.input';
 
 @Injectable()
 export class ProductsService {
@@ -46,8 +48,9 @@ export class ProductsService {
     );
 
     const name =
-      createMonitoredProductInput.name ||
-      last(sortBy(products, 'retailer')).name;
+      createMonitoredProductInput?.name ||
+      last(sortBy(products, 'retailer'))?.name;
+
     const retailerProducts = map(
       products,
       RetailerProductEntity.fromRetailerProductModel,
@@ -68,6 +71,29 @@ export class ProductsService {
     return MonitoredProductModel.fromMonitoredrProductEntity(
       monitoredProductEntity,
     );
+  }
+
+  async remove(
+    removeMonitoredProduct: RemoveMonitoredProductInput,
+  ): Promise<RemoveResultModel> {
+    const monitoredProduct = await this.monitoredProductRepository.findOne(
+      removeMonitoredProduct.monitoredProductId,
+      this.getMonitoredProductLoadOptions(),
+    );
+
+    try {
+      await this.monitoredProductRepository.remove(monitoredProduct);
+      return {
+        removedItemWithId: removeMonitoredProduct.monitoredProductId,
+        successfulyRemoved: true,
+      };
+    } catch (error) {
+      return {
+        removedItemWithId: removeMonitoredProduct.monitoredProductId,
+        errorMessage: error,
+        successfulyRemoved: false,
+      };
+    }
   }
 
   async addProductPageToMonitoredProduct(
@@ -189,6 +215,6 @@ export class ProductsService {
       }),
     );
 
-    return products;
+    return compact(products);
   }
 }

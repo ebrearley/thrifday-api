@@ -5,6 +5,7 @@ import { v5 as uuidv5 } from 'uuid';
 import { DateTime } from 'luxon';
 import { ProductPriceModel } from '@products/models/product-price.model';
 import { RetailerProductEntity } from '@retailers/entities/retailer-product.entity';
+import { orderBy, head, at, nth } from 'lodash';
 
 @ObjectType('RetailerProduct')
 export class RetailerProductModel {
@@ -38,11 +39,28 @@ export class RetailerProductModel {
   @Field((type) => [ProductPriceModel], { nullable: true })
   prices?: ProductPriceModel[];
 
+  @Field((type) => ProductPriceModel, { nullable: true })
+  latestPrice?: ProductPriceModel;
+
+  @Field((type) => ProductPriceModel, { nullable: true })
+  previousPrice?: ProductPriceModel;
+
   static fromRetailerProductEntity(
     retailerProductEntity: RetailerProductEntity,
   ): RetailerProductModel {
+    const pricesOrderedByDate = orderBy(
+      retailerProductEntity.prices,
+      ['observedAtDateTime'],
+      ['asc'],
+    );
+
+    const latestPrice = head(pricesOrderedByDate);
+    const previousPrice = nth(pricesOrderedByDate, 1);
+
     return {
       ...retailerProductEntity,
+      latestPrice,
+      previousPrice,
       productPageUrl: retailerProductEntity.url,
     };
   }
@@ -55,6 +73,12 @@ export class RetailerProductModel {
       productId,
     );
 
+    const price = {
+      id: priceId,
+      observedAtDateTime,
+      value: productDto.price,
+    };
+
     return {
       id: productId,
       brand: productDto.brand,
@@ -64,15 +88,8 @@ export class RetailerProductModel {
       retailer: productDto.retailer,
       packageSize: productDto.packageSize,
       unitPrice: productDto.unitPrice,
-      prices: productDto.price
-        ? [
-            {
-              id: priceId,
-              observedAtDateTime,
-              value: productDto.price,
-            },
-          ]
-        : null,
+      prices: productDto.price ? [price] : null,
+      latestPrice: productDto.price ? price : null,
       isUnavailable: productDto.price ? null : true,
     };
   }
