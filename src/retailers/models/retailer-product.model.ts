@@ -2,10 +2,10 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { ProductDto } from '@products/dtos/product.dto';
 import { RetailerEnum } from '@retailers/@enums/retailer.enum';
 import { v5 as uuidv5 } from 'uuid';
-import { DateTime } from 'luxon';
+import { DateTime, Duration } from 'luxon';
 import { ProductPriceModel } from '@products/models/product-price.model';
 import { RetailerProductEntity } from '@retailers/entities/retailer-product.entity';
-import { orderBy, head, at, nth } from 'lodash';
+import { orderBy, head, at, nth, compact, isEmpty } from 'lodash';
 
 @ObjectType('RetailerProduct')
 export class RetailerProductModel {
@@ -36,6 +36,9 @@ export class RetailerProductModel {
   @Field({ nullable: true })
   isUnavailable?: boolean;
 
+  @Field({ nullable: true })
+  isOnSpecial?: boolean;
+
   @Field((type) => [ProductPriceModel], { nullable: true })
   prices?: ProductPriceModel[];
 
@@ -51,7 +54,7 @@ export class RetailerProductModel {
     const pricesOrderedByDate = orderBy(
       retailerProductEntity.prices,
       ['observedAtDateTime'],
-      ['asc'],
+      ['desc'],
     );
 
     const latestPrice = head(pricesOrderedByDate);
@@ -72,12 +75,31 @@ export class RetailerProductModel {
       `${productDto.productPageUrl}${productDto.price}${observedAtDateTime}`,
       productId,
     );
+    const previousPriceId = uuidv5(
+      `${productDto.productPageUrl}${productDto.wasPrice}${observedAtDateTime}`,
+      productId,
+    );
 
     const price = {
       id: priceId,
       observedAtDateTime,
       value: productDto.price,
     };
+
+    const previousPrice = {
+      id: previousPriceId,
+      observedAtDateTime: DateTime.fromJSDate(observedAtDateTime)
+        .minus({
+          days: 1,
+        })
+        .toJSDate(),
+      value: productDto.wasPrice,
+    };
+
+    const prices = compact([
+      productDto.wasPrice ? previousPrice : null,
+      productDto.price ? price : null,
+    ]);
 
     return {
       id: productId,
@@ -88,9 +110,11 @@ export class RetailerProductModel {
       retailer: productDto.retailer,
       packageSize: productDto.packageSize,
       unitPrice: productDto.unitPrice,
-      prices: productDto.price ? [price] : null,
+      prices: !isEmpty(prices) ? prices : null,
       latestPrice: productDto.price ? price : null,
+      previousPrice: productDto.wasPrice ? previousPrice : null,
       isUnavailable: productDto.price ? null : true,
+      isOnSpecial: productDto.isOnSpecial,
     };
   }
 }

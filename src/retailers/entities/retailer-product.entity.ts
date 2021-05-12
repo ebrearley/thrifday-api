@@ -44,6 +44,9 @@ export class RetailerProductEntity {
   @Column({ nullable: true })
   isUnavailable?: boolean;
 
+  @Column({ nullable: true })
+  isOnSpecial?: boolean;
+
   // Relationships:
 
   @OneToMany(
@@ -78,6 +81,7 @@ export class RetailerProductEntity {
           )
         : [],
       isUnavailable: retailerProductModel.isUnavailable,
+      isOnSpecial: retailerProductModel.isOnSpecial,
     };
   }
 }
