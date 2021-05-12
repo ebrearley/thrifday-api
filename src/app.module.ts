@@ -30,6 +30,7 @@ import { PriceModule } from './price/price.module';
       database: process.env.POSTGRESS_DATABASE,
       autoLoadEntities: true,
       synchronize: process.env.NODE_ENV !== 'production',
+      ssl: Boolean(process.env.POSTGRESS_DATABASE_USE_SSL),
     }),
     ScheduleModule.forRoot(),
     UsersModule,
