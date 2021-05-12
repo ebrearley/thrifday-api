@@ -2,7 +2,13 @@ import { RetailerEnum } from '@retailers/@enums/retailer.enum';
 import { ColesScrapedProductDto } from '@retailers/coles/dtos/coles-scraped-product.dto';
 import { CostcoProductDto } from '@retailers/costco/dtos/costco-product.dto';
 import { IgaScrapedProductDto } from '@retailers/iga/dtos/iga-scraped-product.dto';
-import { IsDecimal, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsDecimal,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+} from 'class-validator';
 import { first } from 'lodash';
 import { WoolworthsProductDto } from '../../retailers/woolworths/dtos/woolworths-product.dto';
 
@@ -24,11 +30,17 @@ export class ProductDto {
   @IsDecimal()
   price?: number;
 
+  @IsDecimal()
+  wasPrice?: number;
+
   @IsString()
   unitPrice?: string;
 
   @IsString()
   packageSize?: string;
+
+  @IsBoolean()
+  isOnSpecial?: boolean;
 
   @IsEnum(RetailerEnum)
   retailer: RetailerEnum;
@@ -39,12 +51,14 @@ export class ProductDto {
     return {
       brand: woolworthsProduct.Brand,
       name: woolworthsProduct.Name,
-      imageUrl: woolworthsProduct.LargeImageFile,
+      imageUrl: woolworthsProduct.MediumImageFile,
       productPageUrl: `https://www.woolworths.com.au/shop/productdetails/${woolworthsProduct.Stockcode}/${woolworthsProduct.UrlFriendlyName}`,
       price: woolworthsProduct.Price,
       retailer: RetailerEnum.Woolworths,
       packageSize: woolworthsProduct.PackageSize,
       unitPrice: `${woolworthsProduct.CupPrice} per ${woolworthsProduct.CupMeasure}`,
+      isOnSpecial: woolworthsProduct.IsOnSpecial,
+      wasPrice: woolworthsProduct.WasPrice,
     };
   }
 
@@ -58,6 +72,7 @@ export class ProductDto {
       packageSize: colesProduct.packageSize,
       unitPrice: colesProduct.unitPrice,
       retailer: RetailerEnum.Coles,
+      isOnSpecial: false, // @TODO: wire this up for real
     };
   }
 
@@ -71,6 +86,7 @@ export class ProductDto {
       packageSize: igaProduct.packageSize,
       unitPrice: igaProduct.unitPrice,
       retailer: RetailerEnum.IGA,
+      isOnSpecial: false, // @TODO: wire this up for real
     };
   }
 
@@ -87,6 +103,7 @@ export class ProductDto {
         ? `${costcoProduct.pricePerUnit?.value} per ${costcoProduct.unitType}`
         : null,
       retailer: RetailerEnum.Costco,
+      isOnSpecial: false, // @TODO: wire this up for real
     };
   }
 }

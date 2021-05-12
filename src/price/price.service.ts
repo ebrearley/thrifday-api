@@ -66,6 +66,7 @@ export class PriceService {
       const updatedProduct = await this.retailerProductRepository.save({
         ...existingProduct,
         isUnavailable: true,
+        isOnSpecial: false,
       });
 
       return updatedProduct;
@@ -89,6 +90,7 @@ export class PriceService {
 
       const updatedProduct = await this.retailerProductRepository.save({
         ...existingProduct,
+        isOnSpecial: currentPrice?.value < previousPrice?.value,
         prices,
       });
 

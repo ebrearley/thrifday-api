@@ -6,7 +6,6 @@ import {
   Column,
   Entity,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -26,6 +25,7 @@ export class ProductPriceEntity {
   @ManyToOne(
     (type) => RetailerProductEntity,
     (retailerProduct) => retailerProduct.prices,
+    { onDelete: 'CASCADE' },
   )
   retailerProduct: RetailerProductEntity;
 

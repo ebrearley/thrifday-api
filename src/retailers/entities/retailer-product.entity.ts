@@ -44,18 +44,22 @@ export class RetailerProductEntity {
   @Column({ nullable: true })
   isUnavailable?: boolean;
 
+  @Column({ nullable: true })
+  isOnSpecial?: boolean;
+
   // Relationships:
 
   @OneToMany(
     (type) => ProductPriceEntity,
     (productPrice) => productPrice.retailerProduct,
-    { cascade: ['insert', 'update'] },
+    { cascade: ['insert', 'update', 'remove'] },
   )
   prices: ProductPriceEntity[];
 
   @ManyToOne(
     (type) => MonitoredProductEntity,
     (monitoredProduct) => monitoredProduct.retailerProducts,
+    { onDelete: 'CASCADE' },
   )
   monitoredProduct: MonitoredProductEntity;
 
@@ -77,6 +81,7 @@ export class RetailerProductEntity {
           )
         : [],
       isUnavailable: retailerProductModel.isUnavailable,
+      isOnSpecial: retailerProductModel.isOnSpecial,
     };
   }
 }
